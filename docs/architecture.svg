@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1340" height="790" viewBox="0 0 1340 790" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+    </marker>
+  </defs>
+
+  <rect width="1340" height="790" fill="#ffffff"/>
+
+  <text x="40" y="52" font-size="24" font-weight="700" fill="#0f172a">GB Wind Forecast Monitor · Architecture</text>
+  <text x="40" y="80" font-size="14" fill="#475569">One Docker container on Render serves the React app and the FastAPI API. Wind data comes from the Elexon BMRS API.</text>
+
+  <rect x="40" y="110" width="300" height="430" rx="14" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="60" y="140" font-size="16" font-weight="700" fill="#0f172a">User's browser</text>
+  <text x="60" y="160" font-size="12" fill="#475569">React app · Vite · shadcn/ui · Tailwind</text>
+
+  <g font-size="13" fill="#0f172a" text-anchor="middle">
+    <rect x="60" y="180" width="260" height="40" rx="8" fill="#ffffff" stroke="#bfdbfe"/>
+    <text x="190" y="205">Date range picker (Jan 2026)</text>
+    <rect x="60" y="230" width="260" height="40" rx="8" fill="#ffffff" stroke="#bfdbfe"/>
+    <text x="190" y="255">Forecast horizon slider (0–48h)</text>
+    <rect x="60" y="292" width="260" height="40" rx="8" fill="#dbeafe" stroke="#60a5fa"/>
+    <text x="190" y="317" font-weight="600">TanStack Query · api/wind.js</text>
+    <rect x="60" y="360" width="260" height="40" rx="8" fill="#ffffff" stroke="#bfdbfe"/>
+    <text x="190" y="385">Metric cards (MAE, RMSE, Bias, P90)</text>
+    <rect x="60" y="410" width="260" height="40" rx="8" fill="#ffffff" stroke="#bfdbfe"/>
+    <text x="190" y="435">Actual vs forecast chart (Recharts)</text>
+  </g>
+  <line x1="190" y1="270" x2="190" y2="290" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="190" y1="332" x2="190" y2="358" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="60" y="478" font-size="12" fill="#475569">Slider calls the API on release,</text>
+  <text x="60" y="496" font-size="12" fill="#475569">not on every step.</text>
+
+  <g transform="translate(60 0)">
+  <rect x="420" y="110" width="480" height="430" rx="14" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="440" y="140" font-size="16" font-weight="700" fill="#0f172a">Render · web service</text>
+  <text x="880" y="140" font-size="12" fill="#475569" text-anchor="end">gb-th-project.onrender.com</text>
+
+  <rect x="440" y="160" width="440" height="365" rx="10" fill="#ffffff" stroke="#a78bfa" stroke-width="1.5"/>
+  <text x="460" y="184" font-size="13" font-weight="700" fill="#5b21b6">Docker container · FastAPI + uvicorn (Python 3.13)</text>
+
+  <rect x="460" y="198" width="400" height="54" rx="8" fill="#faf5ff" stroke="#ddd6fe"/>
+  <text x="476" y="220" font-size="13" font-weight="600" fill="#0f172a">main.py · GET /  →  built React app (static/)</text>
+  <text x="476" y="240" font-size="12" fill="#475569">Also GET /api/health for the platform health check</text>
+
+  <rect x="460" y="270" width="400" height="56" rx="8" fill="#faf5ff" stroke="#ddd6fe"/>
+  <text x="476" y="292" font-size="13" font-weight="600" fill="#0f172a">routes/wind.py · GET /api/wind</text>
+  <text x="476" y="312" font-size="12" fill="#475569">Validates dates (1 Jan – 1 Feb 2026) and horizon (0–48h)</text>
+
+  <rect x="460" y="346" width="400" height="70" rx="8" fill="#faf5ff" stroke="#ddd6fe"/>
+  <text x="476" y="368" font-size="13" font-weight="600" fill="#0f172a">services/wind_service.py</text>
+  <text x="476" y="388" font-size="12" fill="#475569">Per hour: latest forecast published ≥ horizon earlier</text>
+  <text x="476" y="405" font-size="12" fill="#475569">Join on-the-hour actuals · MAE, RMSE, bias, P90</text>
+
+  <rect x="460" y="436" width="400" height="70" rx="8" fill="#faf5ff" stroke="#ddd6fe"/>
+  <text x="476" y="458" font-size="13" font-weight="600" fill="#0f172a">services/elexon.py</text>
+  <text x="476" y="478" font-size="12" fill="#475569">Fetches FUELHH + WINDFOR once per process</text>
+  <text x="476" y="495" font-size="12" fill="#475569">Cached in memory (pandas DataFrames, lru_cache)</text>
+
+  <line x1="660" y1="326" x2="660" y2="344" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="660" y1="416" x2="660" y2="434" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="980" y="110" width="260" height="430" rx="14" fill="#ecfdf5" stroke="#6ee7b7" stroke-width="1.5"/>
+  <text x="1000" y="140" font-size="16" font-weight="700" fill="#0f172a">Elexon BMRS API</text>
+  <text x="1000" y="160" font-size="12" fill="#475569">data.elexon.co.uk/bmrs/api/v1</text>
+
+  <rect x="1000" y="180" width="220" height="78" rx="8" fill="#ffffff" stroke="#a7f3d0"/>
+  <text x="1016" y="204" font-size="13" font-weight="600" fill="#0f172a">FUELHH /stream</text>
+  <text x="1016" y="224" font-size="12" fill="#475569">fuelType = WIND</text>
+  <text x="1016" y="242" font-size="12" fill="#475569">Actual generation, half-hourly</text>
+
+  <rect x="1000" y="274" width="220" height="96" rx="8" fill="#ffffff" stroke="#a7f3d0"/>
+  <text x="1016" y="298" font-size="13" font-weight="600" fill="#0f172a">WINDFOR /stream</text>
+  <text x="1016" y="318" font-size="12" fill="#475569">Wind forecasts, hourly targets</text>
+  <text x="1016" y="336" font-size="12" fill="#475569">Published 8 times a day,</text>
+  <text x="1016" y="354" font-size="12" fill="#475569">looking up to ~2.5 days ahead</text>
+
+  <text x="1000" y="400" font-size="12" font-weight="700" fill="#0f172a">Data window</text>
+  <text x="1000" y="420" font-size="12" fill="#475569">Actuals: 1 Jan – 1 Feb 2026</text>
+  <text x="1000" y="440" font-size="12" fill="#475569">Forecasts published:</text>
+  <text x="1000" y="458" font-size="12" fill="#475569">29 Dec 2025 – 1 Feb 2026</text>
+
+  <line x1="862" y1="471" x2="978" y2="471" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="940" y="462" font-size="11" fill="#0f172a" text-anchor="middle">④ httpx GET</text>
+  <text x="940" y="488" font-size="11" fill="#475569" text-anchor="middle">(first call)</text>
+
+  </g>
+
+  <line x1="342" y1="225" x2="518" y2="225" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="410" y="216" font-size="11" fill="#0f172a" text-anchor="middle">① GET /</text>
+
+  <line x1="322" y1="302" x2="518" y2="302" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="410" y="294" font-size="11" fill="#0f172a" text-anchor="middle">② GET /api/wind</text>
+  <line x1="518" y1="320" x2="322" y2="320" stroke="#334155" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+  <text x="410" y="337" font-size="11" fill="#0f172a" text-anchor="middle">③ points + metrics</text>
+
+  <rect x="40" y="580" width="1260" height="180" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="60" y="610" font-size="16" font-weight="700" fill="#0f172a">Build &amp; deploy</text>
+  <text x="196" y="610" font-size="12" fill="#475569">Dockerfile at the repo root, rebuilt by Render on every push to main</text>
+
+  <g font-size="12" fill="#475569" text-anchor="middle">
+    <rect x="60" y="632" width="210" height="96" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="165" y="664" font-size="13" font-weight="600" fill="#0f172a">GitHub repo</text>
+    <text x="165" y="686">gb-frontend/ (React)</text>
+    <text x="165" y="704">gb-backend/ (FastAPI)</text>
+
+    <rect x="340" y="632" width="270" height="96" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="475" y="664" font-size="13" font-weight="600" fill="#0f172a">Stage 1 · oven/bun</text>
+    <text x="475" y="686">bun install</text>
+    <text x="475" y="704">vite build → dist/</text>
+
+    <rect x="680" y="632" width="300" height="96" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="830" y="664" font-size="13" font-weight="600" fill="#0f172a">Stage 2 · python:3.13-slim + uv</text>
+    <text x="830" y="686">uv sync from uv.lock (no dev deps)</text>
+    <text x="830" y="704">app/ + dist → static/</text>
+
+    <rect x="1050" y="632" width="230" height="96" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="1165" y="664" font-size="13" font-weight="600" fill="#0f172a">Render web service</text>
+    <text x="1165" y="686">uvicorn app.main:app on $PORT</text>
+    <text x="1165" y="704">Health check: /api/health</text>
+  </g>
+  <line x1="272" y1="680" x2="338" y2="680" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="612" y1="680" x2="678" y2="680" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="982" y1="680" x2="1048" y2="680" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)"/>
+</svg>
