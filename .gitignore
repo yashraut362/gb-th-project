@@ -37,3 +37,6 @@ pnpm-debug.log*
 # Logs
 logs/
 *.log
+
+# Built frontend copied in by Docker
+gb-backend/static/
