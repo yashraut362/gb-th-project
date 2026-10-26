@@ -7,7 +7,6 @@ BASE_URL = "https://data.elexon.co.uk/bmrs/api/v1/datasets"
 
 
 def _fetch(dataset: str, params: dict) -> pd.DataFrame:
-    print(f"{BASE_URL}/{dataset}/stream", params)
     response = httpx.get(f"{BASE_URL}/{dataset}/stream", params=params, timeout=60)
     response.raise_for_status()
     df = pd.DataFrame(response.json())
