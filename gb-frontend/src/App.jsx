@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
 import { getWind } from '@/api/wind'
 import DateRangePicker from '@/components/DateRangePicker'
 import MetricCard from '@/components/MetricCard'
@@ -14,8 +15,15 @@ function App() {
   const [start, setStart] = useState(FIRST_DAY)
   const [end, setEnd] = useState('2026-01-07')
   const [horizonH, setHorizonH] = useState(4)
+  const [sliderH, setSliderH] = useState(4)
 
-  const { points, metrics } = useMemo(() => getWind({ start, end, horizonH }), [start, end, horizonH])
+  const { data, error, isPending } = useQuery({
+    queryKey: ['wind', start, end, horizonH],
+    queryFn: () => getWind({ start, end, horizonH }),
+    placeholderData: keepPreviousData,
+  })
+  const points = data?.points ?? []
+  const metrics = data?.metrics
 
   return (
     <main className="mx-auto flex min-h-svh max-w-6xl flex-col gap-6 p-4 md:p-8">
@@ -46,9 +54,16 @@ function App() {
           <div className="grid w-full max-w-xs gap-4 pb-2">
             <div className="flex items-center justify-between">
               <Label>Forecast horizon</Label>
-              <span className="text-sm tabular-nums">{horizonH}h</span>
+              <span className="text-sm tabular-nums">{sliderH}h</span>
             </div>
-            <Slider value={[horizonH]} onValueChange={([value]) => setHorizonH(value)} min={0} max={48} step={1} />
+            <Slider
+              value={[sliderH]}
+              onValueChange={([value]) => setSliderH(value)}
+              onValueCommit={([value]) => setHorizonH(value)}
+              min={0}
+              max={48}
+              step={1}
+            />
           </div>
         </CardContent>
       </Card>
@@ -64,11 +79,15 @@ function App() {
         <CardHeader>
           <CardTitle>Actual vs forecast</CardTitle>
           <CardDescription>
-            {points.length} hours, {start} to {end}
+            {isPending ? 'Loading data from Elexon…' : `${points.length} hours, ${start} to ${end}`}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <WindChart points={points} />
+          {error ? (
+            <p className="text-sm text-destructive">Could not load data: {error.message}</p>
+          ) : (
+            <WindChart points={points} />
+          )}
         </CardContent>
       </Card>
     </main>
